@@ -300,19 +300,18 @@
       
         
           
-          一、安装操作系统配置IP，修改时区等等
-二、环境安装1、安装git1$sudo apt-get install git
-2、安装pip1$sudo apt-get install python-pip
-3、安装django1.8.61$pip install django==1.8.6
-4、安装ng
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/23/opendoor/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="一、安装操作系统"><a href="#一、安装操作系统" class="headerlink" title="一、安装操作系统"></a>一、安装操作系统</h2><p>配置IP，修改时区等等</p>
+<h2 id="二、环境安装"><a href="#二、环境安装" class="headerlink" title="二、环境安装"></a>二、环境安装</h2><h3 id="1、安装git"><a href="#1、安装git" class="headerlink" title="1、安装git"></a>1、安装git</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo apt-get install git</span><br></pre></td></tr></table></figure>
+<h3 id="2、安装pip"><a href="#2、安装pip" class="headerlink" title="2、安装pip"></a>2、安装pip</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo apt-get install python-pip</span><br></pre></td></tr></table></figure>
+<h3 id="3、安装django1-8-6"><a href="#3、安装django1-8-6" class="headerlink" title="3、安装django1.8.6"></a>3、安装django1.8.6</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$pip install django==1.8.6</span><br></pre></td></tr></table></figure>
+<h3 id="4、安装nginx"><a href="#4、安装nginx" class="headerlink" title="4、安装nginx"></a>4、安装nginx</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sudo apt-get install nginx</span><br></pre></td></tr></table></figure>
+<h3 id="5、安装uwsgi"><a href="#5、安装uwsgi" class="headerlink" title="5、安装uwsgi"></a>5、安装uwsgi</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sudo apt-get install python-dev</span><br><span class="line">$sudo pip install uwsgi</span><br></pre></td></tr></table></figure>
+<h2 id="三、程序部署"><a href="#三、程序部署" class="headerlink" title="三、程序部署"></a>三、程序部署</h2><h3 id="1、程序下载"><a href="#1、程序下载" class="headerlink" title="1、程序下载"></a>1、程序下载</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$git clone https://github.com/flywen/opendoor.git</span><br></pre></td></tr></table></figure>
+<h3 id="2、修改nginx配置文件"><a href="#2、修改nginx配置文件" class="headerlink" title="2、修改nginx配置文件"></a>2、修改nginx配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 8001;</span><br><span class="line">	</span><br><span class="line"> 	location / &#123;</span><br><span class="line">                include uwsgi_params;</span><br><span class="line">                uwsgi_pass 127.0.0.1:9090;		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3、创建、修改uwsgi配置文件"><a href="#3、创建、修改uwsgi配置文件" class="headerlink" title="3、创建、修改uwsgi配置文件"></a>3、创建、修改uwsgi配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line">vhost = false</span><br><span class="line">socket = 127.0.0.1:9090</span><br><span class="line">master = true</span><br><span class="line">enable-threads = true</span><br><span class="line">workers = 6</span><br><span class="line">wsgi-file = /home/pi/opendoor/opendoor/wsgi.py</span><br><span class="line">chdir = /home/pi/opendoor</span><br><span class="line">daemonize = /home/pi/opendoor/visitor.log</span><br><span class="line">disable-logging = true</span><br></pre></td></tr></table></figure>
+<h3 id="4、设置程序自启，修改-etc-rc-local，增加以下内容"><a href="#4、设置程序自启，修改-etc-rc-local，增加以下内容" class="headerlink" title="4、设置程序自启，修改/etc/rc.local，增加以下内容"></a>4、设置程序自启，修改/etc/rc.local，增加以下内容</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su pi -c &quot;wsgi /home/pi/opendoor/uwsgi.ini&quot;</span><br></pre></td></tr></table></figure>
+
+          
         
       
     </div>
@@ -430,15 +429,17 @@
       
         
           
-          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in 
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/06/23/hello-world/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+          
         
       
     </div>
@@ -556,15 +557,8 @@
       
         
           
+            
           
-          
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2013/07/06/2018-07-06-date/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
